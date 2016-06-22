@@ -61,7 +61,7 @@ void LOOP_DEVICE::open(void) throw(AUDIO_IO::SETUP_ERROR&)
   /* FIXME: once the enum is moved to sample-specs.h, 
    *        set this to whatever is set as the default
    *        in sample-specs.h */
-  set_sample_format(ECA_AUDIO_FORMAT::sfmt_f32);
+  set_sample_format(ECA_AUDIO_FORMAT::sfmt_f64);
   AUDIO_IO::open();
 }
 

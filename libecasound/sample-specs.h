@@ -33,7 +33,7 @@ namespace SAMPLE_SPECS {
    * Type used to represent one sample value; should
    * be a floating point value (floating-point type)
    */
-  typedef float sample_t;
+  typedef double sample_t;
 
   /**
    * Type used to represent position in sample 
@@ -55,8 +55,8 @@ namespace SAMPLE_SPECS {
    */
   typedef int channel_t;
 
-  static const sample_t silent_value = 0.0f;     // do not change!
-  static const sample_t max_amplitude = 1.0f;
+  static const sample_t silent_value = 0.0;     // do not change!
+  static const sample_t max_amplitude = 1.0;
   static const sample_t impl_max_value = silent_value + max_amplitude;
   static const sample_t impl_min_value = silent_value - max_amplitude;
 

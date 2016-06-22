@@ -81,7 +81,7 @@ extern "C" {
    For audio it is generally assumed that 1.0f is the `0dB' reference
    amplitude and is a `normal' signal level. */
 
-typedef float LADSPA_Data;
+typedef double LADSPA_Data;
 
 /*****************************************************************************/
 

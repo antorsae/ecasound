@@ -587,13 +587,13 @@ void SAMPLE_BUFFER::export_helper(unsigned char* obuffer,
   switch (fmt) {
   case ECA_AUDIO_FORMAT::sfmt_u8:
     {
-      obuffer[(*optr)++] = eca_sample_convert_float_to_u8(value);
+      obuffer[(*optr)++] = eca_sample_convert_sample_to_u8(value);
       break;
     }
     
   case ECA_AUDIO_FORMAT::sfmt_s16_le:
     {
-      int16_t s16temp = eca_sample_convert_float_to_s16(value);
+      int16_t s16temp = eca_sample_convert_sample_to_s16(value);
 
       // little endian: (LSB, MSB) (Intel).
       obuffer[(*optr)++] = (unsigned char)(s16temp & 0xff);
@@ -603,7 +603,7 @@ void SAMPLE_BUFFER::export_helper(unsigned char* obuffer,
       
   case ECA_AUDIO_FORMAT::sfmt_s16_be:
     {
-      int16_t s16temp = eca_sample_convert_float_to_s16(value);
+      int16_t s16temp = eca_sample_convert_sample_to_s16(value);
       
       // big endian: (MSB, LSB) (Motorola).
       obuffer[(*optr)++] = (unsigned char)((s16temp >> 8) & 0xff);
@@ -613,7 +613,7 @@ void SAMPLE_BUFFER::export_helper(unsigned char* obuffer,
     
   case ECA_AUDIO_FORMAT::sfmt_s24_le:
     {
-      int32_t s32temp = eca_sample_convert_float_to_s32(value);
+      int32_t s32temp = eca_sample_convert_sample_to_s32(value);
       
       /* skip the LSB-byte of s32temp (s32temp & 0xff) */
       obuffer[(*optr)++] = (unsigned char)((s32temp >> 8) & 0xff);
@@ -624,7 +624,7 @@ void SAMPLE_BUFFER::export_helper(unsigned char* obuffer,
     
   case ECA_AUDIO_FORMAT::sfmt_s24_be:
     {
-      int32_t s32temp = eca_sample_convert_float_to_s32(value);
+      int32_t s32temp = eca_sample_convert_sample_to_s32(value);
       
       obuffer[(*optr)++] = (unsigned char)((s32temp >> 24) & 0xff);
       obuffer[(*optr)++] = (unsigned char)((s32temp >> 16) & 0xff);
@@ -635,7 +635,7 @@ void SAMPLE_BUFFER::export_helper(unsigned char* obuffer,
     
   case ECA_AUDIO_FORMAT::sfmt_s32_le:
     {
-      int32_t s32temp = eca_sample_convert_float_to_s32(value);
+      int32_t s32temp = eca_sample_convert_sample_to_s32(value);
       
       obuffer[(*optr)++] = (unsigned char)(s32temp & 0xff);
       obuffer[(*optr)++] = (unsigned char)((s32temp >> 8) & 0xff);
@@ -646,7 +646,7 @@ void SAMPLE_BUFFER::export_helper(unsigned char* obuffer,
     
   case ECA_AUDIO_FORMAT::sfmt_s32_be:
     {
-      int32_t s32temp = eca_sample_convert_float_to_s32(value);
+      int32_t s32temp = eca_sample_convert_sample_to_s32(value);
       
       obuffer[(*optr)++] = (unsigned char)((s32temp >> 24) & 0xff);
       obuffer[(*optr)++] = (unsigned char)((s32temp >> 16) & 0xff);
@@ -774,7 +774,7 @@ void SAMPLE_BUFFER::import_helper(const unsigned char *ibuffer,
   switch (fmt) {
   case ECA_AUDIO_FORMAT::sfmt_u8: 
     {
-      obuffer[optr] = eca_sample_convert_u8_to_float(ibuffer[(*iptr)++]);
+      obuffer[optr] = eca_sample_convert_u8_to_sample(ibuffer[(*iptr)++]);
     }
     break;
 	
@@ -792,7 +792,7 @@ void SAMPLE_BUFFER::import_helper(const unsigned char *ibuffer,
       }
       int16_t tmp;
       memcpy(&tmp, a, sizeof(tmp));
-      obuffer[optr] = eca_sample_convert_s16_to_float(tmp);
+      obuffer[optr] = eca_sample_convert_s16_to_sample(tmp);
     }
     break;
 
@@ -808,7 +808,7 @@ void SAMPLE_BUFFER::import_helper(const unsigned char *ibuffer,
       }
       int16_t tmp;
       memcpy(&tmp, a, sizeof(tmp));
-      obuffer[optr] = eca_sample_convert_s16_to_float(tmp);
+      obuffer[optr] = eca_sample_convert_s16_to_sample(tmp);
     }
     break;
 
@@ -828,7 +828,7 @@ void SAMPLE_BUFFER::import_helper(const unsigned char *ibuffer,
       }
       int32_t tmp;
       memcpy(&tmp, b, sizeof(tmp));
-      obuffer[optr] = eca_sample_convert_s32_to_float(tmp);
+      obuffer[optr] = eca_sample_convert_s32_to_sample(tmp);
     }
     break;
 
@@ -848,7 +848,7 @@ void SAMPLE_BUFFER::import_helper(const unsigned char *ibuffer,
       }
       int32_t tmp;
       memcpy(&tmp, b, sizeof(tmp));
-      obuffer[optr] = eca_sample_convert_s32_to_float(tmp);
+      obuffer[optr] = eca_sample_convert_s32_to_sample(tmp);
     }
     break;
 
@@ -868,7 +868,7 @@ void SAMPLE_BUFFER::import_helper(const unsigned char *ibuffer,
       }
       int32_t tmp;
       memcpy(&tmp, b, sizeof(tmp));
-      obuffer[optr] = eca_sample_convert_s32_to_float(tmp);
+      obuffer[optr] = eca_sample_convert_s32_to_sample(tmp);
     }
     break;
 
@@ -888,7 +888,7 @@ void SAMPLE_BUFFER::import_helper(const unsigned char *ibuffer,
       }
       int32_t tmp;
       memcpy(&tmp, b, sizeof(tmp));
-      obuffer[optr] = eca_sample_convert_s32_to_float(tmp);
+      obuffer[optr] = eca_sample_convert_s32_to_sample(tmp);
     }
     break;
 
@@ -906,7 +906,10 @@ void SAMPLE_BUFFER::import_helper(const unsigned char *ibuffer,
 	b[1] = ibuffer[(*iptr)++];
 	b[0] = ibuffer[(*iptr)++];
       }
-      memcpy(&obuffer[optr], b, sizeof(obuffer[optr]));
+      float tmp;
+      memcpy(&tmp, b, sizeof(tmp));
+      obuffer[optr] = eca_sample_convert_float_to_sample(tmp);
+      //memcpy(&obuffer[optr], b, sizeof(obuffer[optr]));
     }
     break;
 
@@ -924,7 +927,10 @@ void SAMPLE_BUFFER::import_helper(const unsigned char *ibuffer,
 	b[2] = ibuffer[(*iptr)++];
 	b[3] = ibuffer[(*iptr)++];
       }
-      memcpy(&obuffer[optr], b, sizeof(obuffer[optr]));
+      float tmp;
+      memcpy(&tmp, b, sizeof(tmp));
+      obuffer[optr] = eca_sample_convert_float_to_sample(tmp);      
+      //memcpy(&obuffer[optr], b, sizeof(obuffer[optr]));
     }
     break;
 
